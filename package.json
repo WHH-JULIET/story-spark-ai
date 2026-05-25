@@ -13,10 +13,10 @@
     }
   },
   "optionalDependencies": {
-    "@esbuild/linux-x64": "0.25.12",
-    "@rollup/rollup-linux-x64-gnu": "4.60.4",
-    "@tailwindcss/oxide-linux-x64-gnu": "4.3.0",
-    "lightningcss-linux-x64-gnu": "1.32.0"
+    "@esbuild/win32-x64": "0.25.12",
+    "@rollup/rollup-win32-x64-msvc": "4.60.4",
+    "@tailwindcss/oxide-win32-x64-msvc": "4.3.0",
+    "lightningcss-win32-x64-msvc": "1.32.0"
   },
   "workspaces": [
     "frontend",
