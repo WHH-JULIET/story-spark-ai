@@ -28,10 +28,9 @@ const FREE_ALTERNATE_ENDING_FAILED_MESSAGE =
   "Alternate ending generation failed. Your free generation quota has been restored.";
 
 const aiModelGenerate = async (payload: IAIModel, token: ITokenPayload) => {
-  const { prompt, wordLength, numStories } = payload;
+  const { prompt, wordLength, numStories, language } = payload;
 
   try {
-    const { prompt, wordLength, numStories, language } = payload;
     const result = await raceGenerationWithTimeout(
       (signal) =>
         generateWithGeminiStories(prompt, wordLength, numStories, language, signal),
@@ -51,10 +50,9 @@ const aiModelGenerate = async (payload: IAIModel, token: ITokenPayload) => {
 };
 
 const aiFreeModelGenerate = async (payload: IAIModel) => {
-  const { prompt } = payload;
+  const { prompt, language } = payload;
 
   try {
-    const { prompt, language } = payload;
     const result = await raceGenerationWithTimeout(
       (signal) => generateWithGeminiStories(prompt, 150, 2, language, signal),
       FREE_GENERATION_TIMEOUT_MS
@@ -104,52 +102,6 @@ const aiFreeModelAlternateEndings = async (
   try {
     const result = await raceGenerationWithTimeout(
       () => generateAlternateEndingsWithGemini(title, content, tag, language),
-      AUTHENTICATED_GENERATION_TIMEOUT_MS
-    );
-    return result;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    if (error instanceof GenerationTimeoutError) {
-      throw new ApiError(httpStatus.GATEWAY_TIMEOUT, "Request timed out!");
-    }
-    throw new ApiError(httpStatus.BAD_GATEWAY, FREE_GENERATION_FAILED_MESSAGE);
-  }
-};
-
-const aiModelAlternateEndings = async (
-  payload: IAlternateEndingPayload,
-  _token: ITokenPayload
-) => {
-  const { title, content, tag } = payload;
-
-  try {
-    const result = await raceGenerationWithTimeout(
-      () => generateAlternateEndingsWithGemini(title, content, tag),
-      AUTHENTICATED_GENERATION_TIMEOUT_MS
-    );
-    assertSuccessfulGeneration(result, ALTERNATE_ENDING_FAILED_MESSAGE);
-    return result;
-  } catch (error) {
-    if (error instanceof ApiError) {
-      throw error;
-    }
-    if (error instanceof GenerationTimeoutError) {
-      throw new ApiError(httpStatus.GATEWAY_TIMEOUT, "Request timed out!");
-    }
-    throw new ApiError(httpStatus.BAD_GATEWAY, ALTERNATE_ENDING_FAILED_MESSAGE);
-  }
-};
-
-const aiFreeModelAlternateEndings = async (
-  payload: IAlternateEndingPayload
-) => {
-  const { title, content, tag } = payload;
-
-  try {
-    const result = await raceGenerationWithTimeout(
-      () => generateAlternateEndingsWithGemini(title, content, tag),
       AUTHENTICATED_GENERATION_TIMEOUT_MS
     );
     assertSuccessfulGeneration(result, FREE_ALTERNATE_ENDING_FAILED_MESSAGE);
