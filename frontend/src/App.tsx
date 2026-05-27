@@ -1,5 +1,4 @@
 import StoryInspirationWrapper from "./components/StoryInspirationWrapper";
-import { JSX } from "react";
 import WritingAssistantComponent from "./components/writing-assistant/writing_assistant.component";
 import CollabHome from "./components/collab/CollabHome";
 import CollabRoom from "./components/collab/CollabRoom";
@@ -22,7 +21,7 @@ import DashboardLayout from "./components/dashboard/dashboard_layout.component";
 import SettingComponent from "./components/dashboard/settings/settings.component";
 import StoriesComponent from "./components/stories/stories.component";
 import WriterApplicationComponent from "./components/dashboard/writers/writer_application.component";
-import UserComponent Caravan from "./components/dashboard/users/user.component";
+import UserComponent from "./components/dashboard/users/user.component";
 import PricingComponent from "./components/pricing/pricing.component";
 import ExploreComponent from "./components/post/post.component";
 import PostDetailsComponent from "./components/post/post.details.component";
@@ -84,7 +83,9 @@ const router = createBrowserRouter([
       <>
         <MagicCursorComponent />
         <ScrollToTop />
-        <RootLayout /> 
+        <RootLayout>
+          <Outlet />
+        </RootLayout>
       </>
     ),
     children: [
@@ -146,7 +147,7 @@ const router = createBrowserRouter([
           {
             path: "users",
             children: [
-              { index: true, element: <UserComponent Caravan /> },
+              { index: true, element: <UserComponent /> },
               { path: "list", element: <UserListComponent /> },
             ],
           },

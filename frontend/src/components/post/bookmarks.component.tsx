@@ -4,7 +4,6 @@ import ExploreViewListComponent from "./post.view.list.component";
 import { Post } from "../../models/post";
 import { useGetMyBookmarksQuery } from "../../redux/apis/bookmark.api";
 import PaginationComponent from "../pagination/pagination.component";
-import { Post } from "../../models/post";
 
 const BookmarksComponent = () => {
   const navigate = useNavigate();
