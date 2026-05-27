@@ -39,12 +39,15 @@ export interface Post {
   tag: string;
   imageURL: string;
   topic: Topic[];
+  language?: string;
   author: Author;
   likesCount: number;
   commentsCount: number;
   viewsCount: number;
   isPublished: boolean;
   isFeaturedPost: boolean;
+  isDeleted?: boolean;
+  deletedAt?: string;
   publishedAt: string;
   updatedBy: string;
   attachments: string[];

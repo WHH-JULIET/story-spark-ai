@@ -9,15 +9,14 @@ import { CommentRouter } from "../app/modules/comment/comment.router";
 import { AnalysisRouter } from "../app/modules/analysis/analysis.router";
 import { ReviewRouter } from "../app/modules/review/review.router";
 import { ReactionRouter } from "../app/modules/reaction/reaction.router";
+import { ContactRoutes } from "../app/modules/contact/contact.route";
+import { StoriesRouter } from "../routes/stories";
 
+import { ReportRouter } from "../app/modules/report/report.router";
 import { NewsletterRouter } from "../app/modules/newsletter/newsletter.route";
-
-
-
-// alongside the other routes:
-
-
 import { BookmarkRouter } from "../app/modules/bookmark/bookmark.router";
+import { StoryVersionRouter } from "../app/modules/story_version/story_version.router";
+import { AnalyticsRouter } from "../app/modules/analytics/analytics.router";
 
 const router = express.Router();
 
@@ -31,9 +30,9 @@ const modules = [
     router: UserRouter,
   },
   {
-  path: "/review",
-  router: ReviewRouter,
-},
+    path: "/review",
+    router: ReviewRouter,
+  },
   {
     path: "/ai_model",
     router: AIModelRouter,
@@ -69,6 +68,26 @@ const modules = [
   {
     path: "/bookmarks",
     router: BookmarkRouter,
+  },
+  {
+    path: "/story",
+    router: StoryVersionRouter,
+  },
+  {
+    path: "/analytics",
+    router: AnalyticsRouter,
+  },
+  {
+    path: "/stories",
+    router: StoriesRouter,
+  },
+  {
+    path: "/contact",
+    router: ContactRoutes,
+  },
+  {
+    path: "/reports",
+    router: ReportRouter,
   },
 ];
 modules.forEach((route) => router.use(route.path, route.router));

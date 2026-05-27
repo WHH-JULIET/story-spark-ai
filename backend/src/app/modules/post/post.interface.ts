@@ -12,6 +12,7 @@ export interface IPostPayload {
   tag: string;
   imageURL: string;
   topic: ITopic[];
+  language?: string;
 }
 
 export interface IPost extends IPostPayload {
@@ -21,6 +22,9 @@ export interface IPost extends IPostPayload {
   viewsCount: number;
   isPublished: boolean;
   isFeaturedPost?: boolean;
+  isDeleted?: boolean;
+  deletedAt?: Date;
+  deletedBy?: Types.ObjectId;
   publishedAt?: Date;
   updatedBy?: Types.ObjectId;
   attachments?: string[];
@@ -37,5 +41,5 @@ export interface IPostSearchFields {
   tag?: string;
   trendingTopic?: string;
   sortFilter?: "mostPopular";
-  genres?: string[];
+  genres?: string | string[];
 }
