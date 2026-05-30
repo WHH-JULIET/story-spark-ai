@@ -47,12 +47,8 @@ import BranchingStory from "./components/stories/BranchingStory";
 import ReportBug from "./components/report-bug/ReportBug";
 import AnalyticsPage from "./components/dashboard/analytics/analytics.page";
 import StoryWorkspace from "./components/story/StoryWorkspace";
-
-
-// =========================================================================
-// PROTECTED ROUTE — supports both wrapper pattern (element prop) and
-// layout-gate pattern (Outlet, no element prop)
-// =========================================================================
+import StoriesComponent from "./components/stories/stories.component";
+import Scrolltotopandscrolltobottom from "./components/Scrolltotopandscrolltobottom.tsx"
 type ProtectedRouteProps = {
   allowedRoles: string[];
   element?: React.ReactElement;
@@ -84,6 +80,7 @@ const router = createBrowserRouter([
       <>
         <MagicCursorComponent />
         <ScrollToTop />
+        <Scrolltotopandscrolltobottom/>
         <RootLayout>
           <Outlet />
         </RootLayout>
