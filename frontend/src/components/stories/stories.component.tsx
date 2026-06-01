@@ -733,11 +733,15 @@ useEffect(() => {
 
   const isOverLimit = textareaValue.length >= MAX_PROMPT_LENGTH;
   const isNearLimit = textareaValue.length >= MAX_PROMPT_LENGTH * WARN_THRESHOLD;
+  const isGenerateDisabled = loading || isOverLimit;
 
   useKeyboardShortcuts({
     onOpenHelp: () => setShowHelpModal(true),
     onCloseHelp: () => setShowHelpModal(false),
     onGenerate: () => {
+      if (isGenerateDisabled) {
+        return;
+      }
       if (inputRef.current) {
         const form = inputRef.current.closest("form");
         if (form) form.requestSubmit();
@@ -824,7 +828,9 @@ useEffect(() => {
                       <button
                         key={genre.value}
                         type="button"
+                        disabled={loading}
                         onClick={() => {
+                          if (loading) return;
                           const newGenre = selectedGenre === genre.value ? "" : genre.value;
                           setSelectedGenre(newGenre);
                           if (newGenre) {
@@ -838,7 +844,7 @@ useEffect(() => {
                           selectedGenre === genre.value
                             ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
                             : "bg-white/10 text-gray-400 hover:bg-white/20 hover:text-gray-200"
-                        }`}
+                        } ${loading ? "cursor-not-allowed opacity-50" : ""}`}
                       >
                         {genre.icon} {genreLabels[genre.name]}
                       </button>
@@ -857,12 +863,13 @@ useEffect(() => {
                         <button
                           key={length}
                           type="button"
+                          disabled={loading}
                           onClick={() => setSelectedLength(length)}
                           className={`px-3 py-1 rounded-full text-xs font-medium transition-all duration-200 ${
                             selectedLength === length
                               ? "bg-indigo-500 text-white shadow-lg shadow-indigo-500/30"
                               : "bg-white/10 text-gray-400 hover:bg-white/20 hover:text-gray-200"
-                          }`}
+                          } ${loading ? "cursor-not-allowed opacity-50" : ""}`}
                         >
                           {text[length]}
                         </button>
@@ -875,8 +882,11 @@ useEffect(() => {
                         <button
                           key="lang-selector-btn"
                           type="button"
-                          onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-                          className="flex items-center gap-2 px-3 py-1 bg-white/10 text-gray-300 border border-slate-700/50 rounded-full text-xs font-semibold hover:bg-white/20 transition-all duration-200 cursor-pointer"
+                          disabled={loading}
+                          onClick={() => !loading && setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                          className={`flex items-center gap-2 px-3 py-1 bg-white/10 text-gray-300 border border-slate-700/50 rounded-full text-xs font-semibold hover:bg-white/20 transition-all duration-200 ${
+                            loading ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+                          }`}
                         >
                           <span>{LANGUAGES.find(l => l.name === selectedLanguage)?.name || "English"}</span>
                           <span className="text-gray-400 text-[10px]">▼</span>
@@ -916,6 +926,8 @@ useEffect(() => {
                         register("prompt").ref(el);
                         inputRef.current = el;
                       }}
+                      disabled={loading}
+                      aria-busy={loading}
                       className={`w-full h-32 sm:h-40 resize-none border-none outline-none bg-transparent text-gray-800 dark:text-gray-200 focus:ring-0 text-lg leading-relaxed tracking-wide placeholder:italic placeholder:text-gray-500 dark:placeholder:text-gray-400 pr-12 transition-colors duration-200 box-border ${
                         isOverLimit
                           ? "ring-1 ring-red-500 rounded"
@@ -930,27 +942,25 @@ useEffect(() => {
                       onKeyDown={(e) => {
                         if (e.key === "Enter" && !e.shiftKey) {
                           e.preventDefault();
+                          if (isGenerateDisabled) {
+                            return;
+                          }
                           const form = e.currentTarget.closest("form");
                           if (form) form.requestSubmit();
                         }
                       }}
                     />
-                    {/* Character count display */}
-<div className={`flex justify-end mt-1 text-xs font-medium transition-colors duration-200 ${
-  isOverLimit
-    ? "text-red-500"
-    : isNearLimit
-    ? "text-yellow-500"
-    : "text-gray-400"
-}`}>
-  {textareaValue.length} / {MAX_PROMPT_LENGTH}
-</div>
 
                     {textareaValue.length > 0 && (
                       <button
                         type="button"
+                        disabled={loading}
                         onClick={handleClearPrompt}
-                        className="absolute right-2 top-2 text-gray-400 hover:text-red-500 transition-colors duration-200"
+                        className={`absolute right-2 top-2 text-gray-400 transition-colors duration-200 ${
+                          loading
+                            ? "cursor-not-allowed opacity-50"
+                            : "hover:text-red-500"
+                        }`}
                         aria-label={text.close}
                         title={text.close}
                       >
@@ -972,8 +982,13 @@ useEffect(() => {
 
                     <button
                       type="button"
-                      onClick={() => setIsRecentPromptsOpen(!isRecentPromptsOpen)}
-                      className="absolute right-2 top-12 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2"
+                      disabled={loading}
+                      onClick={() => !loading && setIsRecentPromptsOpen(!isRecentPromptsOpen)}
+                      className={`absolute right-2 top-12 bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm transition-colors duration-200 flex items-center gap-2 ${
+                        loading
+                          ? "cursor-not-allowed opacity-60"
+                          : "hover:bg-indigo-700"
+                      }`}
                       aria-label={text.recentPrompts}
                       title={text.recentPrompts}
                     >
@@ -1047,8 +1062,13 @@ useEffect(() => {
                           <span className="font-medium">{selectedTone}</span>
                           <button
                             type="button"
+                            disabled={loading}
                             onClick={() => setSelectedTone("")}
-                            className="ml-1 text-gray-500 hover:text-red-400 transition-colors"
+                            className={`ml-1 text-gray-500 transition-colors ${
+                              loading
+                                ? "cursor-not-allowed opacity-50"
+                                : "hover:text-red-400"
+                            }`}
                             aria-label="Remove tone"
                           >
                             ×
@@ -1059,19 +1079,28 @@ useEffect(() => {
 
                     <button
                       type="submit"
-                      disabled={loading || isOverLimit}
+                      disabled={isGenerateDisabled}
                       aria-busy={loading}
-                      aria-disabled={loading || isOverLimit}
+                      aria-disabled={isGenerateDisabled}
                       className={`rounded-lg bg-gradient-to-r from-blue-400 to-indigo-500 text-gray-200 px-6 py-3 font-semibold ${
-                        loading || isOverLimit
+                        isGenerateDisabled
                           ? "opacity-50 cursor-not-allowed"
                           : "cursor-pointer hover:shadow-lg hover:shadow-indigo-500/50 hover:scale-105"
                       } transition-all duration-300 transform flex items-center space-x-2 group`}
                     >
-                      <i className="fas fa-wand-magic-sparkles text-xl transition-transform duration-300 group-hover:animate-wiggle"></i>
-                      {loading ? text.generating : text.generate}
+                      {loading ? (
+                        <i className="fas fa-circle-notch text-xl animate-spin"></i>
+                      ) : (
+                        <i className="fas fa-wand-magic-sparkles text-xl transition-transform duration-300 group-hover:animate-wiggle"></i>
+                      )}
+                      <span>{loading ? text.generating : text.generate}</span>
                     </button>
                   </div>
+                  {loading && (
+                    <p className="text-sm text-indigo-300 mt-3 text-right" aria-live="polite">
+                      Your story is being generated. You can cancel the request if it takes too long.
+                    </p>
+                  )}
                 </form>
               </div>
             </div>
