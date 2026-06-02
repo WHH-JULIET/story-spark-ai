@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { FaXTwitter } from "react-icons/fa6";
 import logo from "../../assets/logoNew.png";
 
 const DEFAULT_GITHUB_ISSUES_URL = "https://github.com/ronisarkarexe/story-spark-ai/issues";
@@ -71,7 +72,7 @@ const FooterComponent = () => {
   const socialLinks = [
     { icon: "fa-instagram", url: "https://www.instagram.com/" },
     { icon: "fa-linkedin", url: "https://www.linkedin.com/" },
-    { icon: "fa-twitter", url: "https://x.com/" },
+    { icon: "fa-x-twitter", url: "https://x.com/" },
     { icon: "fa-facebook", url: "https://www.facebook.com/" },
   ];
 
@@ -192,10 +193,16 @@ const FooterComponent = () => {
                     rel="noopener noreferrer"
                     className="group flex items-center gap-2.5 text-[14px] text-slate-300/85 hover:text-blue-300 transition-all duration-200"
                   >
-                    <i
-                      className={`fa-brands ${item.icon} text-[15px] text-slate-400 group-hover:text-blue-300 transition-colors`}
-                    />
-                    <span className="capitalize">{item.icon.replace("fa-", "")}</span>
+                    {item.icon === "fa-x-twitter" ? (
+                      <FaXTwitter className="text-[15px] text-slate-400 group-hover:text-blue-300 transition-colors" />
+                    ) : (
+                      <i
+                        className={`fa-brands ${item.icon} text-[15px] text-slate-400 group-hover:text-blue-300 transition-colors`}
+                      />
+                    )}
+                    <span className="capitalize">
+                      {item.icon === "fa-x-twitter" ? "X" : item.icon.replace("fa-", "")}
+                    </span>
                   </a>
                 </li>
               ))}
