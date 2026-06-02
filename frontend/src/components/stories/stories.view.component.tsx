@@ -1,4 +1,5 @@
 ﻿import React, { useEffect, useState, useRef, useMemo } from "react";
+
 import { getShortenedText, ITopicData, topicsData, getWordCount, SELECTED_TOPIC_CLASSES } from "./stories.utils";
 import toast, { Toaster } from "react-hot-toast";
 import { useCreatePostMutation, useDeletePostMutation } from "../../redux/apis/post.api";
@@ -11,7 +12,6 @@ import logo from "../../assets/logoNew.png";
 import StoryGeneratingAnimation from "../loading/story-generating-animation.component";
 import AudioPlayer, { type AudioPlayerHandle, type NarrationPlaybackState } from "../AudioPlayer";
 import { useLocation } from "react-router-dom";
-ImageFallback
 import {
   useGenerateAlternateEndingsMutation,
   useGenerateFreeAlternateEndingsMutation,
@@ -114,10 +114,35 @@ const StoriesViewComponent: React.FC<StoriesComponentProps> = ({
   const [activeEndingTab, setActiveEndingTab] = useState<string>("Happy Ending");
   const [narrationWordIndex, setNarrationWordIndex] = useState<number>(0);
   const [narrationState, setNarrationState] = useState<NarrationPlaybackState>("idle");
-
+  const [readingStreak, setReadingStreak] = useState<number>(0);
   const [generateAlternateEndings] = useGenerateAlternateEndingsMutation();
   const [generateFreeAlternateEndings] = useGenerateFreeAlternateEndingsMutation();
+  useEffect(() => {
+  if (!selectedStory) return;
 
+  const today = new Date().toDateString();
+
+  const lastReadDate = localStorage.getItem("lastReadDate");
+  const streak = Number(localStorage.getItem("readingStreak") || "0");
+
+  if (lastReadDate !== today) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    let newStreak = 1;
+
+    if (lastReadDate === yesterday.toDateString()) {
+      newStreak = streak + 1;
+    }
+
+    localStorage.setItem("readingStreak", String(newStreak));
+    localStorage.setItem("lastReadDate", today);
+
+    setReadingStreak(newStreak);
+  } else {
+    setReadingStreak(streak);
+  }
+}, [selectedStory]);
   useEffect(() => {
     if (selectedStory && !originalStoryContent[selectedStory.uuid]) {
       setOriginalStoryContent((prev) => ({
@@ -743,6 +768,31 @@ if (isLoading) {
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-300 to-blue-400 mb-2">
                 {selectedStory?.title}
               </h1>
+              <div className="mt-4 rounded-2xl bg-gradient-to-r from-orange-500 via-red-500 to-pink-500 p-[1px] shadow-lg">
+  <div className="flex items-center gap-4 rounded-2xl bg-white px-4 py-3">
+    <span className="text-4xl">🔥</span>
+
+    <div>
+      <p className="text-xs font-semibold uppercase tracking-wider text-gray-500">
+        Current Streak
+      </p>
+
+      <h3 className="text-2xl font-bold text-gray-900">
+        {readingStreak} Day{readingStreak !== 1 ? "s" : ""}
+      </h3>
+
+      <p className="text-sm text-gray-500">
+        Read a story every day to keep it alive
+      </p>
+    </div>
+  </div>
+</div>
+<div className="mt-2 h-2 overflow-hidden rounded-full bg-gray-200">
+  <div
+    className="h-full rounded-full bg-gradient-to-r from-orange-500 to-red-500 transition-all duration-500"
+    style={{ width: `${Math.min(readingStreak * 10, 100)}%` }}
+  />
+</div>
               <div className="flex flex-wrap gap-2">
                 <span className="inline-flex items-center rounded-full bg-purple-900/60 text-purple-300 border border-purple-700/50 py-1 px-3 text-xs font-semibold">
                   ≡ƒÄ¡ {selectedStory.tag}
