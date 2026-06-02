@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import NavListComponent from "../hero/nav_list.component";
 import CookieConsentBanner from "../cookie-consent/cookie-consent.component";
 import FooterComponent from "../footer/footer.component";
@@ -21,7 +22,19 @@ const RootLayout: React.FC<RootLayoutProps> = ({ children }) => {
       {!hideHeader && <NavListComponent />}
 
       <CookieConsentBanner />
-      <div className="flex-grow min-h-0">{children}</div>
+      <div className="flex-grow min-h-0">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pathname}
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -5 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </div>
       {!hideFooter && <FooterComponent />}
       <ChatComponent />
     </div>

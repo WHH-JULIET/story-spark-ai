@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import CommunitySpotlightComponent from "./community_spotlight/community_spotlight.component";
 import FeatureComponent from "./feature/feature.component";
 import LatestPostsComponent from "./latest_posts/latest_posts.component";
@@ -13,37 +14,57 @@ import PersonalizedRecommendationsComponent from "./personalized_recommendations
 import { isLoggedIn } from "../../services/auth.service";
 import ScrollToTopButton from "../ScrollToTopButton";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } 
+  },
+};
+
 const HomeComponent = () => {
   const isLogin = isLoggedIn();
 
   return (
-    <>
+    <motion.div 
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-10 pb-10">
-        <div className="grid grid-cols-1 items-start gap-8 mb-10 xl:grid-cols-[minmax(0,1fr)_minmax(18rem,22rem)]">
-          <div className="flex w-full min-w-0 max-w-full flex-col gap-8">
+        <div className="grid grid-cols-12 items-start gap-8 mb-10">
+          <motion.div variants={itemVariants} className="col-span-12 lg:col-span-8 min-w-0 flex flex-col gap-8">
             <FeatureComponent />
             <LatestPostsComponent />
-          </div>
-
-          <div className="w-full min-w-0 max-w-full xl:max-w-[22rem] xl:justify-self-end">
-            <div className="sticky top-24 flex w-full min-w-0 flex-col gap-6">
+          </motion.div>
+          <motion.div variants={itemVariants} className="col-span-12 lg:col-span-4 min-w-0">
+            <div className="sticky top-24 flex flex-col gap-6">
               {isLogin && <FeatureProfileComponent />}
               {isLogin && <PersonalizedRecommendationsComponent />}
               <TrendingTopicComponent />
               <RecommendedWritersComponent />
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
-
-      <CommunitySpotlightComponent />
-      <ResourceComponent />
-      <WriterFeedbackComponent />
-      <PricingComponent />
-      <StartWritingComponent />
-      <Contactus />
-      <ScrollToTopButton />
-    </>
+      <motion.div variants={itemVariants}><CommunitySpotlightComponent /></motion.div> 
+      <motion.div variants={itemVariants}><ResourceComponent /></motion.div>
+      <motion.div variants={itemVariants}><WriterFeedbackComponent /></motion.div>
+      <motion.div variants={itemVariants}><PricingComponent /></motion.div>
+      <motion.div variants={itemVariants}><StartWritingComponent /></motion.div>
+      <BackToTop />
+    </motion.div>
   );
 };
 

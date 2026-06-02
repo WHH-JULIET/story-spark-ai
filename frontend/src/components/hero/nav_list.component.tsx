@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import { isLoggedIn, removeUserInfo } from "../../services/auth.service";
 import ThemeToggle from "../theme/theme_toggle.component";
 
@@ -86,23 +87,24 @@ const NavListComponent = () => {
           </button>
         </div>
       </div>
-
-      {menuOpen && (
-        <div className="space-y-1 border-t border-slate-200/70 px-4 py-3 lg:hidden dark:border-white/10">
-          <NavLink to="/" end className={linkClass}>
-            Home
-          </NavLink>
-          <NavLink to="/explore" className={linkClass}>
-            Explore
-          </NavLink>
-          <NavLink to="/story-inspiration" className={linkClass}>
-            Stories
-          </NavLink>
-          <NavLink to="/community" className={linkClass}>
-            Community
-          </NavLink>
-        </div>
-      )}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.4, ease: [0.33, 1, 0.68, 1] }}
+            className="overflow-hidden lg:hidden"
+          >
+            <div className="space-y-1 border-t border-slate-200/70 px-4 py-3 dark:border-white/10">
+              <NavLink to="/" end className={linkClass}>Home</NavLink>
+              <NavLink to="/explore" className={linkClass}>Explore</NavLink>
+              <NavLink to="/story-inspiration" className={linkClass}>Stories</NavLink>
+              <NavLink to="/community" className={linkClass}>Community</NavLink>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };
