@@ -1,4 +1,4 @@
-import { useEffect, useState, type FC } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
 import { Link } from "react-router-dom";
 
 const COOKIE_CONSENT_KEY = "storysparkai_cookie_consent";
@@ -30,7 +30,12 @@ const saveCookiePreferences = (preferences: CookiePreferences) => {
   window.localStorage.setItem(COOKIE_CONSENT_KEY, JSON.stringify(preferences));
 };
 
-const CookieConsentBanner: FC = () => {
+type CookieConsentBannerProps = {
+  onLayoutChange?: (height: number) => void;
+};
+
+const CookieConsentBanner: FC<CookieConsentBannerProps> = ({ onLayoutChange }) => {
+  const bannerRef = useRef<HTMLDivElement>(null);
   const [preferences, setPreferences] = useState<CookiePreferences | null>(null);
   const [showBanner, setShowBanner] = useState(false);
 
@@ -39,6 +44,31 @@ const CookieConsentBanner: FC = () => {
     setPreferences(storedPreferences);
     setShowBanner(!storedPreferences.saved);
   }, []);
+
+  useEffect(() => {
+    if (!showBanner) {
+      onLayoutChange?.(0);
+      return;
+    }
+
+    const updateLayout = () => {
+      const banner = bannerRef.current;
+      if (!banner) return;
+      onLayoutChange?.(banner.getBoundingClientRect().height);
+    };
+
+    updateLayout();
+    const observer = new ResizeObserver(updateLayout);
+    if (bannerRef.current) {
+      observer.observe(bannerRef.current);
+    }
+    window.addEventListener("resize", updateLayout);
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", updateLayout);
+    };
+  }, [onLayoutChange, showBanner]);
 
   if (!preferences || !showBanner) {
     return null;
@@ -66,7 +96,7 @@ const CookieConsentBanner: FC = () => {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 text-white sm:px-6 lg:px-8">
+    <div ref={bannerRef} className="fixed inset-x-0 bottom-0 z-50 px-4 pb-4 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-h-[82vh] max-w-5xl flex-col gap-4 overflow-y-auto rounded-2xl border border-slate-700 bg-slate-950/95 p-4 shadow-2xl backdrop-blur-xl sm:p-5 xl:flex-row xl:items-start xl:justify-between xl:gap-6">
         <div className="max-w-3xl space-y-3">
           <p className="text-xs uppercase tracking-[0.26em] text-slate-400">Cookie Preferences</p>
