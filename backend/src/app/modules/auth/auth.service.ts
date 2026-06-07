@@ -272,7 +272,7 @@ const googleLogin = async (payload: { token: string }) => {
         email: email as string,
         name: (googleName || email || "Google User").slice(0, 100),
         status: "Active",
-        subscriptionType: "free",
+        subscriptionType: SUBSCRIPTION_TYPE.FREE,
         profile: {
           avatar: (picture as string) || "",
           bio: "",
