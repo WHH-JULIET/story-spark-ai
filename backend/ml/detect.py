@@ -7,7 +7,7 @@ Usage:
     python detect.py              ← interactive mode, enter your own session
     from detect import detect     ← import in Flask server
 
-Place at: story-spark-ai/ml/detect.py
+Place at: story-spark-ai/backend/ml/detect.py
 """
 
 import os
