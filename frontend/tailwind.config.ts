@@ -1,8 +1,4 @@
-import type { Config } from "tailwindcss";
-import forms from "@tailwindcss/forms";
-import containerQueries from "@tailwindcss/container-queries";
-
-const config: Config = {
+export default {
   content: [
     "./index.html",
     "./login.html",
@@ -118,8 +114,5 @@ const config: Config = {
       },
     },
   },
-
-  plugins: [forms, containerQueries],
 };
 
-export default config;

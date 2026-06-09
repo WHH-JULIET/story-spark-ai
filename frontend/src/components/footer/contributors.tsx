@@ -1,12 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
 import {
   Globe,
   GitPullRequest,
   Users,
-  Sparkles,
-  Trophy,
-  Zap,
   Star,
   ExternalLink,
   Code2,
@@ -23,7 +19,7 @@ interface Contributor {
   contributions: number;
 }
 
-/* ────────────────────────────── Particle Field ────────────────────────────── */
+/* ───────────── Floating Particles Background ───────────── */
 const ParticleField = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -119,7 +115,7 @@ const ParticleField = () => {
   );
 };
 
-/* ────────────────────────────── Animated Number Counter ────────────────────────────── */
+/* ───────────── Animated Number Counter ───────────── */
 const AnimatedCounter = ({
   value,
   suffix = "",
@@ -161,7 +157,7 @@ const AnimatedCounter = ({
   return <span ref={ref}>0{suffix}</span>;
 };
 
-/* ────────────────────────────── Contributor Card with 3D Tilt ────────────────────────────── */
+/* ───────────── Contributor Card with 3D Tilt ───────────── */
 const ContributorCard = ({
   contributor,
   index,
@@ -181,18 +177,21 @@ const ContributorCard = ({
       glow: "rgba(251,191,36,0.3)",
       badge: "bg-gradient-to-r from-amber-400 to-yellow-500",
       label: "🥇",
+      label: "\uD83E\uDD47",
       borderColor: "rgba(251,191,36,0.4)",
     },
     {
       glow: "rgba(148,163,184,0.3)",
       badge: "bg-gradient-to-r from-slate-300 to-gray-400",
       label: "🥈",
+      label: "\uD83E\uDD48",
       borderColor: "rgba(148,163,184,0.3)",
     },
     {
       glow: "rgba(251,146,60,0.25)",
       badge: "bg-gradient-to-r from-orange-400 to-amber-600",
       label: "🥉",
+      label: "\uD83E\uDD49",
       borderColor: "rgba(251,146,60,0.3)",
     },
   ];
@@ -377,8 +376,10 @@ const ContributorCard = ({
   );
 };
 
-/* ────────────────────────────── MAIN COMPONENT ────────────────────────────── */
-export default function ContributorsComponent() {
+/* ═══════════════════════════════════════════════════════════
+   MAIN COMPONENT
+   ═══════════════════════════════════════════════════════════ */
+const ContributorsComponent = () => {
   const [contributors, setContributors] = useState<Contributor[]>([]);
   const [loading, setLoading] = useState(true);
   const heroRef = useRef<HTMLDivElement>(null);
@@ -387,29 +388,32 @@ export default function ContributorsComponent() {
   const ctaRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    (async () => {
+    const fetchContributors = async () => {
       try {
-        const res = await fetch(
+        const response = await fetch(
           "https://api.github.com/repos/ronisarkarexe/story-spark-ai/contributors"
         );
-
-        const data: Contributor[] = await res.json();
-
+        const data = await response.json();
         if (Array.isArray(data)) {
-          const sorted = data
-            .filter((c) => c.contributions > 0)
-            .sort((a, b) => b.contributions - a.contributions);
-          setContributors(sorted);
+          const filtered = data.filter(
+            (c: Contributor) => c.contributions >= 3
+          );
+          setContributors(filtered);
         }
-      } catch (err) {
-        console.error(err);
+      } catch (error) {
+        console.error("Failed to fetch contributors:", error);
       } finally {
         setLoading(false);
       }
-    })();
+    };
+    fetchContributors();
   }, []);
 
-  const totalPRs = contributors.reduce((acc, c) => acc + c.contributions, 0);
+  const totalPRs = contributors.reduce(
+    (acc, c) => acc + c.contributions,
+    0
+  );
+
   const maxContributions = contributors.length
     ? Math.max(...contributors.map((c) => c.contributions))
     : 1;
@@ -653,6 +657,7 @@ export default function ContributorsComponent() {
 
           <p className="hero-subtitle mt-8 text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
             The brilliant minds behind StorySparkAI — building, iterating, and
+            The brilliant minds behind StorySparkAI - building, iterating, and
             pushing the boundaries of AI-powered storytelling.
           </p>
 
@@ -865,4 +870,6 @@ export default function ContributorsComponent() {
       `}</style>
     </div>
   );
-}
+};
+
+export default ContributorsComponent;
