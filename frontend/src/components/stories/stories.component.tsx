@@ -1041,24 +1041,7 @@ const StoriesComponent = () => {
                     </p>
                   </div>
 
-                      <span
-  className={`text-xs tabular-nums ml-auto flex gap-2 ${
-    isOverLimit
-      ? "text-red-400 font-medium"
-      : isNearLimit
-      ? "text-yellow-400"
-      : "text-gray-500"
-  }`}
->
-  <span>
-    {textareaValue.trim() === "" ? 0 : textareaValue.trim().split(/\s+/).length} words
-  </span>
-  <span className="opacity-40">·</span>
-  <span>{textareaValue.length} / {MAX_PROMPT_LENGTH} chars</span>
-</span>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
+                  <div className="space-y-4">
                       {characters.map((char, index) => (
                         <div
                           key={char.id}
@@ -1133,19 +1116,44 @@ const StoriesComponent = () => {
                   <div className="flex justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/5 w-full box-border select-none">
                     <button
                       type="submit"
-                      disabled={loading || isOverLimit}
+                      disabled={isGenerateDisabled}
                       aria-busy={loading}
-                      aria-disabled={loading || isOverLimit}
-                      className={`w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-500/10 transition-all duration-150 active:scale-[0.98] select-none uppercase tracking-wider flex items-center justify-center gap-2 ${
-                        loading || isOverLimit ? "opacity-50 cursor-not-allowed" : "cursor-pointer"
+                      aria-disabled={isGenerateDisabled}
+                      className={`w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold py-3 px-6 rounded-xl shadow-md shadow-blue-500/10 transition-all duration-150 active:scale-[0.98] select-none uppercase tracking-wider flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                        isGenerateDisabled ? "cursor-not-allowed" : "cursor-pointer"
                       } group`}
                     >
                       {loading ? (
-                        <i className="fas fa-circle-notch text-sm animate-spin" />
+                        <>
+                          <svg
+                            className="w-4 h-4 animate-spin"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            aria-hidden="true"
+                          >
+                            <circle
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              className="opacity-25"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                            />
+                          </svg>
+                          <span>Generating...</span>
+                        </>
                       ) : (
-                        <i className="fas fa-wand-magic-sparkles text-sm group-hover:scale-110 transition-transform duration-200" />
+                        <>
+                          <i className="fas fa-wand-magic-sparkles text-sm group-hover:scale-110 transition-transform duration-200" />
+                          <span>Generate Story</span>
+                        </>
                       )}
-                      <span>{loading ? text.generating : text.generate}</span>
                     </button>
                   </div>
                 </>
