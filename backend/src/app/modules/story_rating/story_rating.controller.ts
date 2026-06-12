@@ -52,8 +52,37 @@ const getAverageRating = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const deleteRating = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.user?.userId;
+  const { ratingId } = req.params;
+
+  const result = await StoryRatingService.deleteRating(userId, ratingId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: result.message,
+    data: null,
+  });
+});
+
+const getTopRatedStories = catchAsync(async (req: Request, res: Response) => {
+  const limit = parseInt(req.query.limit as string) || 10;
+
+  const result = await StoryRatingService.getTopRatedStories(limit);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Top rated stories retrieved successfully",
+    data: result,
+  });
+});
+
 export const StoryRatingController = {
   createOrUpdateRating,
   getStoryRatings,
   getAverageRating,
+  deleteRating,
+  getTopRatedStories,
 };
