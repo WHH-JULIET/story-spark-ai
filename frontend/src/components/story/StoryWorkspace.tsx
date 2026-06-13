@@ -1,3 +1,4 @@
+import StoryBranchGraph from "./StoryBranchGraph";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import toast, { Toaster } from "react-hot-toast";
@@ -21,7 +22,9 @@ const StoryWorkspace = () => {
   const currentStory = useSelector(
     (state: RootState) => state.story.currentStory
   );
-  const [workspaceMode, setWorkspaceMode] = useState<"editor" | "network">("editor");
+const [workspaceMode, setWorkspaceMode] = useState<
+  "editor" | "network" | "graph"
+>("editor");
 
   const handleExportMarkdown = () => {
     if (!currentStory) {
@@ -174,23 +177,35 @@ const StoryWorkspace = () => {
             >
               ⬇️ PDF
             </button>
+            <button
+            onClick={() => setWorkspaceMode("graph")}
+            className={`px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+              workspaceMode === "graph"
+              ? "bg-indigo-600 text-white shadow" 
+              : "text-slate-400 hover:text-slate-255"
+              }`}
+              >
+                🌳 Branch Graph
+                </button>
           </div>
         </div>
 
-        {workspaceMode === "editor" ? (
-          <>
-            <StoryViewer
-              chapters={currentStory.chapters}
-              storyId={currentStory.id}
-            />
+       {workspaceMode === "editor" ? (
+  <>
+    <StoryViewer
+      chapters={currentStory.chapters}
+      storyId={currentStory.id}
+    />
 
-            <div className="p-6 border-t border-zinc-800">
-              <ContinueStoryButton />
-            </div>
-          </>
-        ) : (
-          <CharacterNetwork storyId={currentStory.id} />
-        )}
+    <div className="p-6 border-t border-zinc-800">
+      <ContinueStoryButton />
+    </div>
+  </>
+) : workspaceMode === "network" ? (
+  <CharacterNetwork storyId={currentStory.id} />
+) : (
+  <StoryBranchGraph />
+)}
       </div>
     </div>
   );
