@@ -310,6 +310,7 @@ const [, setShowRemix] = useState<boolean>(false);
     lastSavedContentRef.current = "";
     hasSavedSessionRef.current = false;
     savedPostIdRef.current = null;
+    setTopics(topicsData);
   }, [stories]);
 
   useEffect(() => {
