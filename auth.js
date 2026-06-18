@@ -241,28 +241,27 @@ function validateConfirmPassword(showInline) {
 function setSubmitting(submitting) {
     isSubmitting = submitting;
     const submitBtn = document.getElementById('submit-btn');
-    const spinner = document.getElementById('submit-btn-spinner') || document.getElementById('btn-spinner');
-    const submitBtnText = document.getElementById('submit-btn-text') || document.getElementById('btn-label'); 
+    const spinner = document.getElementById('submit-btn-spinner');
+    const submitBtnText = document.getElementById('submit-btn-text'); 
     const emailField = document.getElementById('email-field');
     const nameField = document.getElementById('name-field');
     const passwordField = document.getElementById('password-field');
     const confirmPasswordField = document.getElementById('confirm-password-field');
 
     if (submitBtn) {
-        submitBtn.disabled = submitting;
-        submitBtn.classList.toggle('opacity-70', submitting);
-        submitBtn.classList.toggle('cursor-not-allowed', submitting);
-    }
+    submitBtn.disabled = submitting;
+    submitBtn.classList.toggle('opacity-70', submitting);
+    submitBtn.classList.toggle('cursor-not-allowed', submitting);}
     if (spinner) spinner.classList.toggle('hidden', !submitting);
     if (submitBtnText) {
-        submitBtnText.textContent = submitting
-            ? 'Processing...'
-            : (currentMode === 'signup' ? 'Create Account' : 'Log In to StorySparkAI');
-    }
+    submitBtnText.textContent = submitting
+        ? 'Processing...'
+        : 'Create Account';}
     if (emailField) emailField.disabled = submitting;
     if (nameField) nameField.disabled = submitting;
     if (passwordField) passwordField.disabled = submitting;
     if (confirmPasswordField) confirmPasswordField.disabled = submitting;
+    
 }
 
 /* ── Advanced Particle System (Canvas + Mouse Interactions) ── */
@@ -381,7 +380,7 @@ function toggleAuthMode(mode) {
         const nameField = document.getElementById('name-field');
         const passwordField = document.getElementById('password-field'); // Added for auto-fill fix
         const submitBtn = document.getElementById('submit-btn');
-        const submitBtnText = document.getElementById('btn-label') || document.getElementById('submit-btn-text'); // Support both IDs
+        const submitBtnText = document.getElementById('btn-label'); // Updated target matching your HTML ID
         const tabSignin = document.getElementById('tab-signin');
         const tabSignup = document.getElementById('tab-signup');
         const forgotPass = document.getElementById('forgot-password-link') || document.querySelector('a[href="#"]');
@@ -710,14 +709,7 @@ async function handleGoogleCredentialResponse(response) {
             return;
         }
 
-        const token = data?.data?.accessToken || data?.accessToken || data?.token || (typeof data?.data === 'string' ? data.data : null);
-        
-        if (!token) {
-            setAlert('error', 'Google login failed. Invalid token received from server.');
-            return;
-        }
-
-        localStorage.setItem('accessToken', token);
+        localStorage.setItem('accessToken', data.data.accessToken);
         setAlert('success', 'Signed in with Google successfully! Redirecting…');
         setTimeout(() => {
             window.location.href = '/dashboard';

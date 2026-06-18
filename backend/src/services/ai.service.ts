@@ -6,19 +6,6 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import Anthropic from "@anthropic-ai/sdk";
 
 let openai: OpenAI | null = null;
-let genAI: GoogleGenerativeAI | null = null;
-
-function getGeminiClient(): GoogleGenerativeAI {
-  if (!genAI) {
-    const key = process.env.GEMINI_API_KEY;
-    if (!key) {
-      throw new Error("Gemini API key is required but was not provided. Please set GEMINI_API_KEY environment variable.");
-    }
-    genAI = new GoogleGenerativeAI(key);
-  }
-  return genAI;
-}
-
 let anthropic: Anthropic | null = null;
 const genAI  = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
@@ -96,8 +83,7 @@ async function generateWithAnthropic(prompt: string): Promise<string> {
 // ─── Gemini call ─────────────────────────────────────────────────────────────
 
 async function generateWithGemini(prompt: string): Promise<string> {
-  const client = getGeminiClient();
-  const model  = client.getGenerativeModel({ model: GEMINI_MODEL });
+  const model  = genAI.getGenerativeModel({ model: GEMINI_MODEL });
   const result = await model.generateContent(prompt);
   const text   = result.response.text();
 

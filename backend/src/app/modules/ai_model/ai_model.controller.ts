@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { setGuestUserIdCookie } from "../../../utils/cookie.util";
-import { randomUUID } from "node:crypto";
 import httpStatus from "http-status";
 import ApiError from "../../../errors/api_error";
 import catchAsync from "../../../shared/catch_async";
@@ -44,7 +43,7 @@ const aiFreeModelGenerate = catchAsync(async (req: Request, res: Response) => {
   let userId = req.cookies.userId as string | undefined;
 
   if (!userId) {
-    userId = randomUUID();
+    userId = Math.random().toString(36).substring(7);
     setGuestUserIdCookie(res, userId);
   }
 
@@ -95,7 +94,7 @@ const aiFreeModelAlternateEndings = catchAsync(
     let userId = req.cookies.userId as string | undefined;
 
     if (!userId) {
-      userId = randomUUID();
+      userId = Math.random().toString(36).substring(7);
       setGuestUserIdCookie(res, userId);
     }
 
@@ -196,7 +195,7 @@ const aiFreeModelRemix = catchAsync(async (req: Request, res: Response) => {
   let userId = req.cookies.userId as string | undefined;
 
   if (!userId) {
-    userId = randomUUID();
+    userId = Math.random().toString(36).substring(7);
     setGuestUserIdCookie(res, userId);
   }
 
@@ -246,7 +245,7 @@ const aiFreeModelTranslate = catchAsync(async (req: Request, res: Response) => {
   let userId = req.cookies.userId as string | undefined;
 
   if (!userId) {
-    userId = randomUUID();
+    userId = Math.random().toString(36).substring(7);
     setGuestUserIdCookie(res, userId);
   }
 
@@ -296,7 +295,7 @@ const aiFreeModelChat = catchAsync(async (req: Request, res: Response) => {
   let userId = req.cookies.userId as string | undefined;
 
   if (!userId) {
-    userId = randomUUID();
+    userId = Math.random().toString(36).substring(7);
     setGuestUserIdCookie(res, userId);
   }
 
@@ -346,7 +345,7 @@ const aiFreeStoryContinuation = catchAsync(async (req: Request, res: Response) =
   let userId = req.cookies.userId as string | undefined;
 
   if (!userId) {
-    userId = randomUUID();
+    userId = Math.random().toString(36).substring(7);
     setGuestUserIdCookie(res, userId);
   }
 
